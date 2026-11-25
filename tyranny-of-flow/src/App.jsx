@@ -118,6 +118,37 @@ function Nav() {
 
 /* ───────────────────────── 히어로 ───────────────────────── */
 
+/** 방송처럼 흘러가는 타임코드 (HH:MM:SS:FF) */
+function LiveTimecode() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const start = performance.now();
+    let raf;
+    const pad = (n) => String(n).padStart(2, '0');
+    const tick = (now) => {
+      const t = (now - start) / 1000;
+      const f = Math.floor((t % 1) * 30);
+      const s = Math.floor(t) % 60;
+      const m = Math.floor(t / 60) % 60;
+      const h = Math.floor(t / 3600);
+      if (ref.current)
+        ref.current.textContent = `${pad(h)}:${pad(m)}:${pad(s)}:${pad(f)}`;
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  return (
+    <span className="flex items-center gap-2">
+      <span className="h-1.5 w-1.5 animate-blink rounded-full bg-red-bright" />
+      LIVE
+      <span ref={ref} className="tabular-nums text-paper/60">
+        00:00:00:00
+      </span>
+    </span>
+  );
+}
+
 function Hero() {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -151,44 +182,111 @@ function Hero() {
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink via-ink/50 to-transparent" />
         </motion.div>
 
+        {/* 영화적 비네팅 + 필름 그레인 */}
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_60%_50%,transparent_35%,rgba(0,0,0,0.75)_100%)]" />
+        <div className="grain pointer-events-none absolute inset-0 z-[1]" />
+
+        <motion.div
+          style={{ opacity: fade }}
+          className="pointer-events-none absolute inset-0 z-[2]"
+        >
+          {/* 액자 프레임 + 모서리 크롭마크 */}
+          <motion.div
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 1.6, ease }}
+            className="absolute inset-4 border border-paper/[0.07] md:inset-6"
+          >
+            {[
+              'left-0 top-0 border-l border-t',
+              'right-0 top-0 border-r border-t',
+              'left-0 bottom-0 border-l border-b',
+              'right-0 bottom-0 border-r border-b',
+            ].map((pos) => (
+              <span
+                key={pos}
+                className={`absolute h-4 w-4 -m-px border-paper/60 ${pos}`}
+              />
+            ))}
+          </motion.div>
+
+          {/* 오른쪽 세로 부제 */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.2, duration: 1.2 }}
+            className="absolute right-9 top-1/2 hidden -translate-y-1/2 font-mono text-[10px] tracking-[0.15em] text-paper/35 [writing-mode:vertical-rl] lg:block"
+          >
+            미디어의 영향력 · 여론 프레이밍 · 인식의 자율성
+          </motion.p>
+        </motion.div>
+
         <motion.div
           style={{ y: textY, opacity: fade }}
-          className="relative z-10 flex h-full flex-col justify-between px-6 pb-10 pt-24 md:px-12 md:pb-12"
+          className="relative z-10 flex h-full flex-col justify-between px-8 pb-12 pt-20 md:px-16 md:pb-14 md:pt-24"
         >
-          {/* 제목 위치 유지를 위한 빈 자리 (justify-between 레이아웃) */}
-          <div aria-hidden="true" className="font-mono text-[11px]">&nbsp;</div>
+          {/* 상단 메타 정보 */}
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.8, duration: 1, ease }}
+            className="flex items-center justify-between border-b border-paper/10 pb-3 font-mono text-[10px] tracking-[0.25em] text-paper/45"
+          >
+            <span>2026-2 REALTIME GRAPHICS</span>
+            <LiveTimecode />
+          </motion.div>
 
           <div>
             <motion.p
               initial={{ opacity: 0, letterSpacing: '0.1em' }}
-              animate={{ opacity: 0.6, letterSpacing: '0.6em' }}
+              animate={{ opacity: 1, letterSpacing: '0.6em' }}
               transition={{ delay: 0.5, duration: 1.8, ease }}
-              className="font-mono text-xs text-paper md:text-sm"
+              className="font-mono text-xs text-red-bright md:text-sm"
             >
               TYRANNY OF FLOW
             </motion.p>
-            <h1 className="mt-4 flex font-serif text-[17vw] font-normal leading-[0.95] tracking-[-0.03em] md:text-[10rem]">
+            <h1 className="mt-4 flex items-end font-serif text-[17vw] font-normal leading-[0.95] tracking-[-0.03em] md:text-[10rem]">
               {title.map((ch, i) => (
-                <motion.span
+                <span
                   key={i}
-                  initial={{ opacity: 0, y: 80, rotateX: -80 }}
-                  animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                  transition={{ delay: 0.7 + i * 0.08, duration: 1.2, ease }}
-                  style={{
-                    transformOrigin: '50% 100%',
-                    display: 'inline-block',
-                  }}
-                  className={ch === ' ' ? 'w-[0.28em]' : ''}
+                  className="inline-block overflow-hidden pb-[0.08em]"
                 >
-                  {ch}
-                </motion.span>
+                  <motion.span
+                    initial={{ y: '110%', rotateX: -60 }}
+                    animate={{ y: '0%', rotateX: 0 }}
+                    transition={{ delay: 0.7 + i * 0.08, duration: 1.3, ease }}
+                    style={{
+                      transformOrigin: '50% 100%',
+                      display: 'inline-block',
+                    }}
+                    className={ch === ' ' ? 'w-[0.28em]' : ''}
+                  >
+                    {ch}
+                  </motion.span>
+                </span>
               ))}
+              {/* 붉은 정육면체 마침표 */}
+              <motion.span
+                initial={{ scale: 0, rotate: -45 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 1.45, duration: 0.8, ease }}
+                className="mb-[0.16em] ml-[0.08em] inline-block h-[0.13em] w-[0.13em] bg-red-bright shadow-[0_0_40px_rgba(232,69,60,0.7)]"
+              />
             </h1>
+
+            {/* 붉은 선 스윕 */}
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ delay: 1.6, duration: 1.4, ease }}
+              className="mt-8 h-px w-40 origin-left bg-gradient-to-r from-red-bright to-transparent md:w-64"
+            />
+
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5, duration: 1, ease }}
-              className="mt-8 max-w-md text-base leading-relaxed text-paper/70 md:text-lg"
+              transition={{ delay: 1.8, duration: 1, ease }}
+              className="mt-6 max-w-2xl font-serif text-lg leading-relaxed text-paper/80 md:text-2xl"
             >
               우리는 얼마나 주체적으로 정보를 받아들이고 있나요?
             </motion.p>
@@ -211,15 +309,15 @@ function Hero() {
               <dt className="font-mono text-paper/35">작가</dt>
               <dd>D조 — 김화랑, 김나현, 최현아, YuXuanMing, ZhangLanDan</dd>
             </dl>
-            <a
-              href="#guide"
-              className="group hidden shrink-0 items-center gap-3 rounded-full border border-paper/25 px-5 py-3 text-sm text-paper/90 backdrop-blur transition-colors hover:border-red-bright hover:bg-red-bright/10 md:flex"
-            >
-              체험 방법 보기
-              <span className="transition-transform group-hover:translate-y-0.5">
-                ↓
-              </span>
-            </a>
+            <div className="hidden shrink-0 flex-col items-end gap-5 md:flex">
+              <a
+                href="#before"
+                className="group hidden shrink-0 items-center gap-3 rounded-full border border-paper/25 px-5 py-3 text-sm text-paper/90 backdrop-blur transition-colors hover:border-red-bright hover:bg-red-bright/10 md:flex"
+              >
+                체험 방법 보기
+                <span className="inline-block animate-bob">↓</span>
+              </a>
+            </div>
           </motion.div>
         </motion.div>
       </div>
@@ -327,19 +425,9 @@ function About() {
               </span>
             </p>
           </Reveal>
-          <Reveal
-            delay={0.2}
-            className="mt-8 font-mono text-[11px] text-ink/40"
-          >
-            ↘ 하나의 사실 위에 해석이 겹겹이 쌓입니다. 스크롤하면 층이
-            벌어집니다.
-          </Reveal>
         </div>
         <LayerStack />
       </div>
-      <p className="mx-auto mt-6 max-w-7xl px-6 text-right font-mono text-[10px] text-ink/35 md:px-12">
-        * 매체별 헤드라인은 프레이밍을 설명하기 위한 예시입니다.
-      </p>
     </section>
   );
 }
@@ -419,7 +507,6 @@ const STEPS = [
     how: '화면을 향해 천천히 걸어 들어오세요.',
     see: '느리던 카드와 붉은 실이 점점 빨라지며 당신을 둘러쌉니다.',
     think: '미디어에 다가가는 순간, 우리는 이미 수많은 정보에 둘러싸입니다.',
-    tip: '멀리서부터 한 걸음씩 다가오면 변화가 더 잘 느껴져요.',
     image: 'step1',
   },
   {
@@ -429,7 +516,6 @@ const STEPS = [
     how: '고개를 왼쪽, 오른쪽으로 천천히 돌려 보세요.',
     see: '시점이 당신의 시선을 따라가다 빠른 흐름에 끌려갑니다. 다른 카드들은 시야 밖으로 밀려납니다.',
     think: '하나의 관점을 좇는 동안, 당신은 무엇을 놓치고 있나요?',
-    tip: '한쪽 방향을 오래 바라보면 그 흐름에 더 깊이 끌려갑니다.',
     image: 'step2',
   },
   {
@@ -439,7 +525,6 @@ const STEPS = [
     how: '한 손을 들어 카메라를 향해 손바닥을 활짝 펴고, 잠시 그대로 멈춰 있으세요.',
     see: '흐름이 느려지고 화면이 고요해지며, 카드 더미 아래 가려져 있던 사실이 드러납니다.',
     think: '멈춰야 비로소 비교하고, 의심하고, 판단할 수 있습니다.',
-    tip: '손바닥이 카메라를 정면으로 향하게 해 주세요.',
     image: 'step3',
   },
   {
@@ -450,7 +535,6 @@ const STEPS = [
     see: '급류가 다시 살아나고, 붉은 실과 카드가 사실을 다시 덮어 버립니다.',
     think:
       '우리는 흐름을 잠시 멈출 수 있지만, 흐름의 규칙까지 바꿀 수는 없습니다.',
-    tip: '다시 손을 펴면 언제든 흐름을 멈출 수 있어요.',
     image: 'step4',
   },
 ];
@@ -558,7 +642,7 @@ function Stage({ active }) {
               </span>
               <span>
                 <span className="block font-mono text-[10px] tracking-widest text-red">
-                  TRY {step.no}
+                  {step.no}
                 </span>
                 <span className="block font-serif text-lg md:text-xl">
                   {step.verb}
@@ -626,9 +710,6 @@ function StepBlock({ step, onActive }) {
           >
             {step.no}
           </span>
-          <span className="font-mono text-[11px] tracking-[0.25em] text-ink/40">
-            TRY
-          </span>
         </div>
         <h3 className="mt-6 font-serif text-4xl font-normal md:text-5xl">
           {step.verb}
@@ -654,10 +735,6 @@ function StepBlock({ step, onActive }) {
           </div>
         </div>
 
-        <p className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink/[0.04] px-4 py-2 text-[13px] text-ink/60">
-          <span className="font-mono text-[10px] text-red">TIP</span>
-          {step.tip}
-        </p>
       </motion.div>
     </div>
   );

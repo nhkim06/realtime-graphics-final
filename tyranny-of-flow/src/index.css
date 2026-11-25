@@ -19,6 +19,12 @@
   --animate-marquee: marquee 60s linear infinite;
   --animate-blink: blink 1.4s steps(2) infinite;
   --animate-scroll-hint: scrollhint 2.2s ease-in-out infinite;
+  --animate-bob: bob 1.6s ease-in-out infinite;
+
+  @keyframes bob {
+    0%, 100% { transform: translateY(-2px); }
+    50% { transform: translateY(4px); }
+  }
 
   @keyframes marquee {
     from { transform: translateX(0); }
