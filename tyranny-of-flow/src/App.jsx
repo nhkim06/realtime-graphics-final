@@ -682,7 +682,8 @@ function StepBlock({ step, onActive }) {
   return (
     <div
       ref={ref}
-      className="flex min-h-[70vh] flex-col justify-start py-6 lg:min-h-screen lg:justify-center lg:py-14"
+      data-snap
+      className="flex min-h-[60vh] flex-col justify-start py-6 lg:min-h-screen lg:justify-center lg:py-14"
     >
       <motion.div
         animate={{ opacity: inView ? 1 : 0.25 }}
@@ -747,7 +748,91 @@ function StepBlock({ step, onActive }) {
   );
 }
 
+/**
+ * 체험 가이드 4단계용 빠른 스냅.
+ * CSS scroll-snap은 브라우저가 속도를 정해 느리게 느껴지므로,
+ * 스크롤이 멈추면 가까운 단계로 직접 짧게(DURATION) 애니메이션한다.
+ */
+function useFastSnap() {
+  useEffect(() => {
+    const DURATION = 280; // ms
+    const IDLE = 90; // 스크롤이 멈췄다고 판단하는 시간
+    let idleTimer;
+    let raf;
+    let animating = false;
+
+    const targetFor = (el) => {
+      const r = el.getBoundingClientRect();
+      const isLg = window.matchMedia('(min-width: 1024px)').matches;
+      // 데스크톱: 화면 중앙 정렬 / 모바일: 고정 스크린(40vh) 바로 아래 정렬
+      return isLg
+        ? window.scrollY + r.top + r.height / 2 - window.innerHeight / 2
+        : window.scrollY + r.top - window.innerHeight * 0.4;
+    };
+
+    const cancel = () => {
+      if (!animating) return;
+      animating = false;
+      cancelAnimationFrame(raf);
+      document.documentElement.style.scrollBehavior = '';
+    };
+
+    const animateTo = (to) => {
+      const from = window.scrollY;
+      const start = performance.now();
+      animating = true;
+      document.documentElement.style.scrollBehavior = 'auto';
+      const step = (now) => {
+        if (!animating) return;
+        const t = Math.min((now - start) / DURATION, 1);
+        const e = 1 - Math.pow(1 - t, 3); // easeOutCubic
+        window.scrollTo(0, from + (to - from) * e);
+        if (t < 1) raf = requestAnimationFrame(step);
+        else {
+          animating = false;
+          document.documentElement.style.scrollBehavior = '';
+        }
+      };
+      raf = requestAnimationFrame(step);
+    };
+
+    const settle = () => {
+      if (animating) return;
+      const blocks = document.querySelectorAll('[data-snap]');
+      let best = null;
+      blocks.forEach((el) => {
+        const to = targetFor(el);
+        const d = Math.abs(to - window.scrollY);
+        if (!best || d < best.d) best = { to, d };
+      });
+      // 가까울 때만 끌어당김 (다른 섹션은 자유 스크롤)
+      if (best && best.d > 2 && best.d < window.innerHeight * 0.3) animateTo(best.to);
+    };
+
+    const onScroll = () => {
+      if (animating) return;
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(settle, IDLE);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    // 사용자가 다시 조작하면 스냅 애니메이션 즉시 중단
+    window.addEventListener('wheel', cancel, { passive: true });
+    window.addEventListener('touchstart', cancel, { passive: true });
+    window.addEventListener('keydown', cancel);
+    return () => {
+      clearTimeout(idleTimer);
+      cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('wheel', cancel);
+      window.removeEventListener('touchstart', cancel);
+      window.removeEventListener('keydown', cancel);
+    };
+  }, []);
+}
+
 function Guide() {
+  useFastSnap();
   const [active, setActive] = useState('idle');
   const idx = STEPS.findIndex((s) => s.key === active);
 
