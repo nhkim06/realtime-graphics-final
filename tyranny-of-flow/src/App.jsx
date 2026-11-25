@@ -226,7 +226,9 @@ function Hero() {
           className="relative z-10 flex h-full flex-col justify-between px-8 pb-12 pt-20 md:px-16 md:pb-14 md:pt-24"
         >
           {/* 제목 위치 유지를 위한 빈 자리 */}
-          <div aria-hidden="true" className="pb-3 font-mono text-[10px]">&nbsp;</div>
+          <div aria-hidden="true" className="pb-3 font-mono text-[10px]">
+            &nbsp;
+          </div>
 
           <div>
             <motion.p
@@ -382,7 +384,7 @@ function About() {
           <Reveal
             as="h2"
             delay={0.05}
-            className="mt-6 font-serif text-4xl font-normal leading-[1.25] md:text-6xl"
+            className="mt-6 font-serif text-4xl font-normal leading-[1.12] md:text-6xl"
           >
             수많은 목소리에
             <br />
@@ -598,7 +600,7 @@ function Stage({ active }) {
         animate={pose}
         transition={{ duration: 1.4, ease }}
         style={{ transformStyle: 'preserve-3d' }}
-        className="relative aspect-[16/10] w-full max-w-[640px]"
+        className="relative aspect-[16/10] w-full max-w-[300px] sm:max-w-[380px] md:max-w-[440px] lg:max-w-[640px]"
       >
         {/* 스크린 */}
         <div className="absolute inset-0 overflow-hidden bg-ink shadow-[0_70px_100px_-40px_rgba(0,0,0,0.55)] ring-1 ring-black">
@@ -620,16 +622,16 @@ function Stage({ active }) {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5, ease }}
               style={{ translateZ: 90 }}
-              className="absolute -bottom-8 -left-3 z-30 flex items-center gap-4 bg-paper py-3 pl-3 pr-6 text-ink shadow-[0_30px_50px_-20px_rgba(0,0,0,0.4)] md:-left-10"
+              className="absolute -bottom-5 -left-3 z-30 flex items-center gap-2.5 bg-paper py-2 pl-2 pr-4 text-ink shadow-[0_30px_50px_-20px_rgba(0,0,0,0.4)] lg:-bottom-8 lg:-left-10 lg:gap-4 lg:py-3 lg:pl-3 lg:pr-6"
             >
-              <span className="flex h-12 w-12 items-center justify-center bg-red text-paper">
-                <GestureIcon kind={step.key} className="h-8 w-8" />
+              <span className="flex h-9 w-9 items-center justify-center bg-red text-paper lg:h-12 lg:w-12">
+                <GestureIcon kind={step.key} className="h-6 w-6 lg:h-8 lg:w-8" />
               </span>
               <span>
-                <span className="block font-mono text-[10px] tracking-widest text-red">
+                <span className="block font-mono text-[9px] tracking-widest text-red lg:text-[10px]">
                   {step.no}
                 </span>
-                <span className="block font-serif text-lg md:text-xl">
+                <span className="block font-serif text-sm sm:text-base lg:text-xl">
                   {step.verb}
                 </span>
               </span>
@@ -647,7 +649,7 @@ function Stage({ active }) {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.6 }}
               style={{ translateZ: 50 }}
-              className="absolute -right-4 -top-10 z-20 hidden w-[36%] md:block lg:-right-10"
+              className="absolute -right-10 -top-10 z-20 hidden w-[36%] lg:block"
             >
               <img
                 src={img(step.image)}
@@ -719,7 +721,6 @@ function StepBlock({ step, onActive }) {
             </p>
           </div>
         </div>
-
       </motion.div>
     </div>
   );
@@ -755,7 +756,7 @@ function Guide() {
         <div className="sticky top-0 z-20 -mx-6 h-[46vh] bg-wall px-8 pb-6 pt-16 md:mx-0 lg:h-screen lg:bg-transparent lg:px-0 lg:py-0">
           <Stage active={active} />
           {/* 진행 표시 */}
-          <div className="absolute bottom-2 left-8 flex items-center gap-3 lg:bottom-16 lg:left-0">
+          <div className="absolute bottom-3 right-8 flex items-center gap-3 lg:bottom-16 lg:left-0 lg:right-auto">
             {STEPS.map((s, i) => (
               <span key={s.key} className="flex items-center gap-1.5">
                 <span
@@ -818,7 +819,7 @@ function ReadTheScreen() {
           delay={0.05}
           className="mt-6 font-serif text-3xl font-normal md:text-5xl"
         >
-          화면 속 요소가 뜻하는 것
+          화면 속 요소들의 의미
         </Reveal>
 
         <div className="mt-16 grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">

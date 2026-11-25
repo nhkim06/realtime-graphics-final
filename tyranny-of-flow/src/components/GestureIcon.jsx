@@ -40,9 +40,17 @@ export function GestureIcon({ kind, active = true, color = "currentColor", class
       )}
       {kind === "stand" && (
         <>
-          <circle cx="24" cy="10" r="4" />
-          <path d="M24 15v13M24 28l-5 10M24 28l5 10M24 19l-6 5M24 19l6 5" />
-          <ellipse cx="24" cy="42" rx="12" ry="3" />
+          {/* 사람: 자리에 내려와 서는 듯 살짝 위아래로 */}
+          <motion.g animate={active ? { y: [-2, 1] } : { y: 0 }} transition={{ ...loop, duration: 1.8 }}>
+            <circle cx="24" cy="10" r="4" />
+            <path d="M24 15v13M24 28l-5 10M24 28l5 10M24 19l-6 5M24 19l6 5" />
+          </motion.g>
+          {/* 바닥 표시: 은은하게 깜빡임 */}
+          <motion.ellipse
+            cx="24" cy="42" rx="12" ry="3"
+            animate={active ? { opacity: [1, 0.35] } : { opacity: 1 }}
+            transition={{ ...loop, duration: 1.8 }}
+          />
         </>
       )}
       {kind === "camera" && (
@@ -55,8 +63,19 @@ export function GestureIcon({ kind, active = true, color = "currentColor", class
       {kind === "slow" && (
         <>
           <circle cx="24" cy="24" r="15" />
-          <motion.path d="M24 24V14" animate={active ? { rotate: [0, 360] } : {}} transition={{ repeat: Infinity, duration: 6, ease: "linear" }} style={{ originX: "24px", originY: "24px" }} />
-          <path d="M24 24l6 4" />
+          {/* 분침: 시계 중심(24,24)을 기준으로 천천히 회전 */}
+          <path d="M24 24V13">
+            {active && (
+              <animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24" dur="28s" repeatCount="indefinite" />
+            )}
+          </path>
+          {/* 시침: 같은 중심에서 훨씬 느리게 회전 */}
+          <path d="M24 24l5 3.5">
+            {active && (
+              <animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24" dur="160s" repeatCount="indefinite" />
+            )}
+          </path>
+          <circle cx="24" cy="24" r="1.2" fill={color} stroke="none" />
         </>
       )}
     </svg>
