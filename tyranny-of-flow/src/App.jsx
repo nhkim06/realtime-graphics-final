@@ -683,7 +683,7 @@ function StepBlock({ step, onActive }) {
     <div
       ref={ref}
       data-snap
-      className="flex min-h-[60vh] flex-col justify-start py-6 lg:min-h-screen lg:justify-center lg:py-14"
+      className="flex min-h-[60vh] flex-col justify-start pb-9 pt-7 lg:min-h-screen lg:justify-center lg:py-14"
     >
       <motion.div
         animate={{ opacity: inView ? 1 : 0.25 }}
@@ -691,7 +691,7 @@ function StepBlock({ step, onActive }) {
       >
         <div className="flex items-baseline gap-5">
           <span
-            className="font-serif text-5xl leading-none text-transparent md:text-7xl lg:text-8xl"
+            className="font-serif text-[2.5rem] leading-none text-transparent md:text-7xl lg:text-8xl"
             style={{
               WebkitTextStroke: inView
                 ? '1px #c8221f'
@@ -701,17 +701,17 @@ function StepBlock({ step, onActive }) {
             {step.no}
           </span>
         </div>
-        <h3 className="mt-2 font-serif text-[1.75rem] font-normal md:mt-6 md:text-5xl">
+        <h3 className="mt-1.5 font-serif text-[1.45rem] font-normal md:mt-6 md:text-5xl">
           {step.verb}
         </h3>
-        <p className="mt-2 text-[15px] leading-relaxed text-ink/85 md:mt-5 md:text-lg">{step.how}</p>
+        <p className="mt-1.5 text-[14px] leading-relaxed text-ink/85 md:mt-5 md:text-lg">{step.how}</p>
 
         {/* 보게 될 것 — 보조 정보 */}
-        <div className="mt-5 border-t border-ink/15 pt-4 md:mt-10 md:pt-6">
+        <div className="mt-4 border-t border-ink/15 pt-3 md:mt-10 md:pt-6">
           <p className="font-mono text-[10px] tracking-[0.2em] text-ink/40">
             보게 될 것
           </p>
-          <p className="mt-1.5 text-[14px] leading-relaxed text-ink/65 md:mt-2 md:text-[15px]">
+          <p className="mt-1 text-[13px] leading-relaxed text-ink/65 md:mt-2 md:text-[15px]">
             {step.see}
           </p>
         </div>
@@ -720,7 +720,7 @@ function StepBlock({ step, onActive }) {
         <motion.div
           animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0.6, y: 12, scale: 0.98 }}
           transition={{ duration: 0.9, ease }}
-          className="relative mt-4 overflow-hidden bg-paper px-5 py-4 text-ink shadow-[0_24px_50px_-30px_rgba(0,0,0,0.25)] ring-1 ring-ink/[0.06] md:mt-8 md:px-9 md:pb-10 md:pt-8"
+          className="relative mt-3 overflow-hidden bg-paper px-4 py-3 text-ink shadow-[0_24px_50px_-30px_rgba(0,0,0,0.25)] ring-1 ring-ink/[0.06] md:mt-8 md:px-9 md:pb-10 md:pt-8"
         >
           {/* 왼쪽 붉은 바 — 활성화되면 위에서 아래로 그려짐 */}
           <motion.span
@@ -738,7 +738,7 @@ function StepBlock({ step, onActive }) {
           <motion.p
             animate={inView ? { opacity: 1, filter: 'blur(0px)' } : { opacity: 0.4, filter: 'blur(3px)' }}
             transition={{ duration: 1, delay: 0.3, ease }}
-            className="relative font-serif text-[17px] leading-[1.55] md:text-[1.7rem]"
+            className="relative font-serif text-[15px] leading-[1.55] md:text-[1.7rem]"
           >
             {step.think}
           </motion.p>
