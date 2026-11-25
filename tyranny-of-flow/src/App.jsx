@@ -156,15 +156,19 @@ function Hero() {
     offset: ['start start', 'end start'],
   });
   // 스크롤하면 화면이 뒤로 눕듯 기울어지며 멀어짐
-  const rotX = useTransform(scrollYProgress, [0, 1], [0, 38]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.72]);
+  // 모바일은 머무는 구간(섹션 높이)과 기울기를 줄여 바로 넘어가는 느낌으로
+  const [isMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
+  );
+  const rotX = useTransform(scrollYProgress, [0, 1], [0, isMobile ? 14 : 38]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, isMobile ? 0.9 : 0.72]);
   const radius = useTransform(scrollYProgress, [0, 0.4], [0, 4]);
   const textY = useTransform(scrollYProgress, [0, 1], [0, -120]);
   const fade = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   const title = '흐름의 폭정'.split('');
 
   return (
-    <section id="top" ref={ref} className="relative h-[130svh] bg-ink">
+    <section id="top" ref={ref} className="relative h-[108svh] bg-ink md:h-[130svh]">
       <div className="sticky top-0 h-[100svh] overflow-hidden [perspective:1400px]">
         <motion.div
           style={{
