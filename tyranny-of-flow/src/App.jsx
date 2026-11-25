@@ -683,7 +683,7 @@ function StepBlock({ step, onActive }) {
     <div
       ref={ref}
       data-snap
-      className="flex min-h-[60vh] flex-col justify-start pb-9 pt-7 lg:min-h-screen lg:justify-center lg:py-14"
+      className="flex min-h-[58vh] flex-col justify-start pb-9 pt-9 lg:min-h-screen lg:justify-center lg:py-14"
     >
       <motion.div
         animate={{ opacity: inView ? 1 : 0.25 }}
@@ -764,10 +764,10 @@ function useFastSnap() {
     const targetFor = (el) => {
       const r = el.getBoundingClientRect();
       const isLg = window.matchMedia('(min-width: 1024px)').matches;
-      // 데스크톱: 화면 중앙 정렬 / 모바일: 고정 스크린(40vh) 바로 아래 정렬
+      // 데스크톱: 화면 중앙 정렬 / 모바일: 고정 스크린(42vh) 바로 아래 정렬
       return isLg
         ? window.scrollY + r.top + r.height / 2 - window.innerHeight / 2
-        : window.scrollY + r.top - window.innerHeight * 0.4;
+        : window.scrollY + r.top - window.innerHeight * 0.42;
     };
 
     const cancel = () => {
@@ -904,7 +904,7 @@ function Guide() {
       </div>
 
       <div className="mx-auto grid max-w-7xl gap-6 px-6 md:px-12 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
-        <div className="sticky top-0 z-20 -mx-6 h-[40vh] bg-wall px-8 pb-5 pt-12 md:mx-0 lg:h-screen lg:bg-transparent lg:px-0 lg:py-0">
+        <div className="sticky top-0 z-20 -mx-6 h-[42vh] bg-wall px-8 pb-5 pt-[3.75rem] md:mx-0 lg:h-screen lg:bg-transparent lg:px-0 lg:py-0">
           <Stage active={active} />
           {/* 진행 표시 */}
           <div className="absolute bottom-3 right-8 flex items-center gap-3 lg:bottom-16 lg:left-0 lg:right-auto">
