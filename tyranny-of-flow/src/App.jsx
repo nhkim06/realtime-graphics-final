@@ -155,14 +155,8 @@ function Hero() {
           style={{ y: textY, opacity: fade }}
           className="relative z-10 flex h-full flex-col justify-between px-6 pb-10 pt-24 md:px-12 md:pb-12"
         >
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 1 }}
-            className="font-mono text-[11px] tracking-[0.3em] text-red-bright"
-          >
-            관람 가이드 · VISITOR GUIDE
-          </motion.p>
+          {/* 제목 위치 유지를 위한 빈 자리 (justify-between 레이아웃) */}
+          <div aria-hidden="true" className="font-mono text-[11px]">&nbsp;</div>
 
           <div>
             <motion.p
@@ -196,8 +190,7 @@ function Hero() {
               transition={{ delay: 1.5, duration: 1, ease }}
               className="mt-8 max-w-md text-base leading-relaxed text-paper/70 md:text-lg"
             >
-              당신의 몸짓에 반응하는 정보의 급류.
-              <br />네 가지 동작으로 흐름을 직접 움직여 보세요.
+              우리는 얼마나 주체적으로 정보를 받아들이고 있나요?
             </motion.p>
           </div>
 
