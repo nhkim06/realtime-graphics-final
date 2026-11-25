@@ -336,7 +336,7 @@ function LayerStack() {
   return (
     <div
       ref={ref}
-      className="relative mx-auto flex h-[440px] w-full max-w-[520px] items-center justify-center [perspective:1600px] md:h-[560px]"
+      className="relative mx-auto flex h-[360px] w-full max-w-[520px] items-center justify-center [perspective:1600px] md:h-[560px]"
     >
       <motion.div
         style={{ rotateX: 58, rotateZ: rotZ, transformStyle: 'preserve-3d' }}
@@ -377,7 +377,7 @@ function Layer({ l, i, gap }) {
 
 function About() {
   return (
-    <section id="about" className="relative bg-wall py-28 text-ink md:py-44">
+    <section id="about" className="relative bg-wall pb-8 pt-28 text-ink md:py-44">
       <div className="mx-auto grid max-w-7xl items-center gap-16 px-6 md:px-12 lg:grid-cols-2">
         <div>
           <Eyebrow className="text-red">About the work</Eyebrow>
@@ -917,7 +917,7 @@ const ELEMENTS = [
 
 function ReadTheScreen() {
   return (
-    <section id="read" className="bg-ink py-28 text-paper md:py-44">
+    <section id="read" className="bg-ink pb-20 pt-28 text-paper md:py-44">
       <div className="mx-auto max-w-7xl px-6 md:px-12">
         <Eyebrow className="text-red-bright">Reading the screen</Eyebrow>
         <Reveal
@@ -982,7 +982,7 @@ function Closing() {
       <div className="pointer-events-none absolute inset-0 opacity-30">
         <FlowCanvas mode="palm" density={0.6} />
       </div>
-      <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-6 py-32 md:px-12">
+      <div className="relative mx-auto flex max-w-7xl flex-col justify-center px-6 pb-24 pt-28 md:min-h-screen md:px-12 md:py-32">
         <Eyebrow className="text-red-bright">After the experience</Eyebrow>
         <motion.h2
           style={{ filter }}
