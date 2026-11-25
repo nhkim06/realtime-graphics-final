@@ -831,6 +831,51 @@ function useFastSnap() {
   }, []);
 }
 
+/** 지정한 위치까지 부드럽게(easeInOutCubic) 스크롤 */
+function scrollToY(to, duration = 650) {
+  const from = window.scrollY;
+  const start = performance.now();
+  const html = document.documentElement;
+  html.style.scrollBehavior = 'auto';
+  const step = (now) => {
+    const t = Math.min((now - start) / duration, 1);
+    const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    window.scrollTo(0, from + (to - from) * e);
+    if (t < 1) requestAnimationFrame(step);
+    else html.style.scrollBehavior = '';
+  };
+  requestAnimationFrame(step);
+}
+
+/** i번째 단계 블록이 화면 중앙에 오도록 이동 (데스크톱 전용) */
+function goToStep(i) {
+  const blocks = document.querySelectorAll('[data-snap]');
+  const el = blocks[Math.max(0, Math.min(i, blocks.length - 1))];
+  if (!el) return;
+  const r = el.getBoundingClientRect();
+  scrollToY(window.scrollY + r.top + r.height / 2 - window.innerHeight / 2);
+}
+
+function StepNavButton({ dir, disabled, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={dir === 'prev' ? '이전 동작' : '다음 동작'}
+      className="group flex h-11 w-11 items-center justify-center rounded-full border border-ink/20 bg-paper/70 text-ink backdrop-blur transition-all duration-300 hover:border-red hover:bg-red hover:text-paper disabled:pointer-events-none disabled:opacity-30"
+    >
+      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        {dir === 'prev' ? (
+          <path d="M15 5l-7 7 7 7" className="transition-transform group-hover:-translate-x-0.5" />
+        ) : (
+          <path d="M9 5l7 7-7 7" className="transition-transform group-hover:translate-x-0.5" />
+        )}
+      </svg>
+    </button>
+  );
+}
+
 function Guide() {
   useFastSnap();
   const [active, setActive] = useState('idle');
@@ -877,6 +922,12 @@ function Guide() {
                 </span>
               </span>
             ))}
+          </div>
+
+          {/* 데스크톱: 이전 / 다음 단계 버튼 */}
+          <div className="absolute bottom-14 right-0 hidden items-center gap-2 lg:flex">
+            <StepNavButton dir="prev" disabled={idx <= 0} onClick={() => goToStep(idx - 1)} />
+            <StepNavButton dir="next" disabled={idx >= STEPS.length - 1} onClick={() => goToStep(idx + 1)} />
           </div>
         </div>
 
@@ -928,7 +979,7 @@ function ReadTheScreen() {
           화면 속 요소들의 의미
         </Reveal>
 
-        <div className="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 md:mt-16 md:gap-x-10 md:gap-y-16">
+        <div className="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 md:mt-16 md:gap-x-10 md:gap-y-16 lg:grid-cols-4 lg:gap-x-6">
           {ELEMENTS.map((el, i) => (
             <motion.article
               key={el.name}
@@ -939,7 +990,7 @@ function ReadTheScreen() {
               style={{ transformPerspective: 1000 }}
             >
               <Tilt max={12}>
-                <div className="relative aspect-[4/5] md:aspect-[16/10] overflow-hidden bg-ink-2 shadow-[0_40px_60px_-30px_rgba(0,0,0,0.9)] ring-1 ring-paper/10">
+                <div className="relative aspect-[4/5] md:aspect-[16/10] lg:aspect-[4/5] overflow-hidden bg-ink-2 shadow-[0_40px_60px_-30px_rgba(0,0,0,0.9)] ring-1 ring-paper/10">
                   <img
                     src={img(el.image)}
                     alt={`${el.name} — 프로토타입 화면`}
@@ -954,7 +1005,7 @@ function ReadTheScreen() {
                   </span>
                 </div>
               </Tilt>
-              <h3 className="mt-4 text-[15px] font-semibold md:mt-6 md:text-xl">{el.name}</h3>
+              <h3 className="mt-4 text-[15px] font-semibold md:mt-6 md:text-xl lg:text-lg">{el.name}</h3>
               <p className="mt-1.5 text-[13px] leading-relaxed md:mt-2 md:text-[15px] text-paper/55">
                 {el.body}
               </p>
