@@ -703,24 +703,43 @@ function StepBlock({ step, onActive }) {
         </h3>
         <p className="mt-5 text-lg leading-relaxed text-ink/85">{step.how}</p>
 
-        <div className="mt-10 grid gap-6 border-t border-ink/15 pt-6 sm:grid-cols-2">
-          <div>
-            <p className="font-mono text-[10px] tracking-[0.2em] text-ink/40">
-              보게 될 것
-            </p>
-            <p className="mt-2 text-[15px] leading-relaxed text-ink/70">
-              {step.see}
-            </p>
-          </div>
-          <div>
-            <p className="font-mono text-[10px] tracking-[0.2em] text-red">
-              생각해 볼 것
-            </p>
-            <p className="mt-2 font-serif text-[17px] leading-relaxed text-ink">
-              {step.think}
-            </p>
-          </div>
+        {/* 보게 될 것 — 보조 정보 */}
+        <div className="mt-10 border-t border-ink/15 pt-6">
+          <p className="font-mono text-[10px] tracking-[0.2em] text-ink/40">
+            보게 될 것
+          </p>
+          <p className="mt-2 text-[15px] leading-relaxed text-ink/65">
+            {step.see}
+          </p>
         </div>
+
+        {/* 생각해 볼 것 — 강조 블록 */}
+        <motion.div
+          animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0.6, y: 12, scale: 0.98 }}
+          transition={{ duration: 0.9, ease }}
+          className="relative mt-8 overflow-hidden bg-paper px-7 pb-8 pt-7 text-ink shadow-[0_24px_50px_-30px_rgba(0,0,0,0.25)] ring-1 ring-ink/[0.06] md:px-9 md:pb-10 md:pt-8"
+        >
+          {/* 왼쪽 붉은 바 — 활성화되면 위에서 아래로 그려짐 */}
+          <motion.span
+            animate={{ scaleY: inView ? 1 : 0 }}
+            transition={{ duration: 1.1, delay: 0.2, ease }}
+            className="absolute inset-y-0 left-0 w-1 origin-top bg-red"
+          />
+          {/* 큰 따옴표 장식 */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-2 -top-10 select-none font-serif text-[10rem] leading-none text-red/10"
+          >
+            ”
+          </span>
+          <motion.p
+            animate={inView ? { opacity: 1, filter: 'blur(0px)' } : { opacity: 0.4, filter: 'blur(3px)' }}
+            transition={{ duration: 1, delay: 0.3, ease }}
+            className="relative font-serif text-xl leading-[1.6] md:text-[1.7rem] md:leading-[1.55]"
+          >
+            {step.think}
+          </motion.p>
+        </motion.div>
       </motion.div>
     </div>
   );
