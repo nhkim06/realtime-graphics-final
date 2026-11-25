@@ -441,9 +441,9 @@ const TIPS = [
 
 function Before() {
   return (
-    <section id="before" className="bg-wall pb-28 text-ink md:pb-40">
+    <section id="before" className="bg-wall pb-24 text-ink md:pb-40">
       <div className="mx-auto max-w-7xl px-6 md:px-12">
-        <div className="border-t border-ink/15 pt-16">
+        <div className="border-t border-ink/[0.07] pt-16">
           <Eyebrow className="text-red">Before you start</Eyebrow>
           <Reveal
             as="h2"
@@ -453,7 +453,7 @@ function Before() {
             시작하기 전에
           </Reveal>
         </div>
-        <div className="mt-14 grid gap-px bg-ink/10 md:grid-cols-3">
+        <div className="mt-7 grid gap-px md:mt-14 bg-ink/10 md:grid-cols-3">
           {TIPS.map((t, i) => (
             <motion.div
               key={t.title}
@@ -461,7 +461,7 @@ function Before() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-10%' }}
               transition={{ duration: 0.9, delay: i * 0.12, ease }}
-              className="group bg-wall p-8 transition-colors duration-500 hover:bg-paper md:p-10"
+              className="group bg-wall px-8 pb-7 pt-8 transition-colors duration-500 hover:bg-paper md:p-10"
             >
               <div className="flex items-start justify-between">
                 <GestureIcon
@@ -472,7 +472,7 @@ function Before() {
                   0{i + 1}
                 </span>
               </div>
-              <h3 className="mt-10 text-lg font-semibold">{t.title}</h3>
+              <h3 className="mt-8 text-lg font-semibold md:mt-10">{t.title}</h3>
               <p className="mt-3 text-sm leading-relaxed text-ink/60">
                 {t.body}
               </p>
@@ -839,7 +839,7 @@ function Guide() {
   return (
     <section id="guide" className="relative bg-wall text-ink">
       <div className="mx-auto max-w-7xl px-6 md:px-12">
-        <div className="border-t border-ink/15 pt-16">
+        <div className="border-t border-ink/[0.07] pt-16">
           <Eyebrow className="text-red">How to experience</Eyebrow>
           <Reveal
             as="h2"
@@ -928,7 +928,7 @@ function ReadTheScreen() {
           화면 속 요소들의 의미
         </Reveal>
 
-        <div className="mt-16 grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 md:mt-16 md:gap-x-10 md:gap-y-16">
           {ELEMENTS.map((el, i) => (
             <motion.article
               key={el.name}
@@ -939,7 +939,7 @@ function ReadTheScreen() {
               style={{ transformPerspective: 1000 }}
             >
               <Tilt max={12}>
-                <div className="relative aspect-[4/5] overflow-hidden bg-ink-2 shadow-[0_40px_60px_-30px_rgba(0,0,0,0.9)] ring-1 ring-paper/10">
+                <div className="relative aspect-[4/5] md:aspect-[16/10] overflow-hidden bg-ink-2 shadow-[0_40px_60px_-30px_rgba(0,0,0,0.9)] ring-1 ring-paper/10">
                   <img
                     src={img(el.image)}
                     alt={`${el.name} — 프로토타입 화면`}
@@ -954,8 +954,8 @@ function ReadTheScreen() {
                   </span>
                 </div>
               </Tilt>
-              <h3 className="mt-6 text-lg font-semibold">{el.name}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-paper/55">
+              <h3 className="mt-4 text-[15px] font-semibold md:mt-6 md:text-xl">{el.name}</h3>
+              <p className="mt-1.5 text-[13px] leading-relaxed md:mt-2 md:text-[15px] text-paper/55">
                 {el.body}
               </p>
             </motion.article>
