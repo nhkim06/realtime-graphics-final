@@ -672,7 +672,9 @@ function Stage({ active }) {
 
 function StepBlock({ step, onActive }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { margin: '-45% 0px -45% 0px' });
+  // 모바일은 상단에 스크린이 고정되어 있으므로 활성 기준선을 화면 아래쪽(55%)으로 내림
+  const isLg = typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches;
+  const inView = useInView(ref, { margin: isLg ? '-45% 0px -45% 0px' : '-55% 0px -44% 0px' });
   useEffect(() => {
     if (inView) onActive(step.key);
   }, [inView, onActive, step.key]);
@@ -680,7 +682,7 @@ function StepBlock({ step, onActive }) {
   return (
     <div
       ref={ref}
-      className="flex min-h-[85vh] flex-col justify-center py-14 lg:min-h-screen"
+      className="flex min-h-[70vh] flex-col justify-start py-6 lg:min-h-screen lg:justify-center lg:py-14"
     >
       <motion.div
         animate={{ opacity: inView ? 1 : 0.25 }}
@@ -688,7 +690,7 @@ function StepBlock({ step, onActive }) {
       >
         <div className="flex items-baseline gap-5">
           <span
-            className="font-serif text-7xl leading-none text-transparent md:text-8xl"
+            className="font-serif text-5xl leading-none text-transparent md:text-7xl lg:text-8xl"
             style={{
               WebkitTextStroke: inView
                 ? '1px #c8221f'
@@ -698,17 +700,17 @@ function StepBlock({ step, onActive }) {
             {step.no}
           </span>
         </div>
-        <h3 className="mt-6 font-serif text-4xl font-normal md:text-5xl">
+        <h3 className="mt-2 font-serif text-[1.75rem] font-normal md:mt-6 md:text-5xl">
           {step.verb}
         </h3>
-        <p className="mt-5 text-lg leading-relaxed text-ink/85">{step.how}</p>
+        <p className="mt-2 text-[15px] leading-relaxed text-ink/85 md:mt-5 md:text-lg">{step.how}</p>
 
         {/* 보게 될 것 — 보조 정보 */}
-        <div className="mt-10 border-t border-ink/15 pt-6">
+        <div className="mt-5 border-t border-ink/15 pt-4 md:mt-10 md:pt-6">
           <p className="font-mono text-[10px] tracking-[0.2em] text-ink/40">
             보게 될 것
           </p>
-          <p className="mt-2 text-[15px] leading-relaxed text-ink/65">
+          <p className="mt-1.5 text-[14px] leading-relaxed text-ink/65 md:mt-2 md:text-[15px]">
             {step.see}
           </p>
         </div>
@@ -717,7 +719,7 @@ function StepBlock({ step, onActive }) {
         <motion.div
           animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0.6, y: 12, scale: 0.98 }}
           transition={{ duration: 0.9, ease }}
-          className="relative mt-8 overflow-hidden bg-paper px-7 pb-8 pt-7 text-ink shadow-[0_24px_50px_-30px_rgba(0,0,0,0.25)] ring-1 ring-ink/[0.06] md:px-9 md:pb-10 md:pt-8"
+          className="relative mt-4 overflow-hidden bg-paper px-5 py-4 text-ink shadow-[0_24px_50px_-30px_rgba(0,0,0,0.25)] ring-1 ring-ink/[0.06] md:mt-8 md:px-9 md:pb-10 md:pt-8"
         >
           {/* 왼쪽 붉은 바 — 활성화되면 위에서 아래로 그려짐 */}
           <motion.span
@@ -728,14 +730,14 @@ function StepBlock({ step, onActive }) {
           {/* 큰 따옴표 장식 */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -right-2 -top-10 select-none font-serif text-[10rem] leading-none text-red/10"
+            className="pointer-events-none absolute -right-1 -top-6 select-none font-serif text-[6rem] md:-right-2 md:-top-10 md:text-[10rem] leading-none text-red/10"
           >
             ”
           </span>
           <motion.p
             animate={inView ? { opacity: 1, filter: 'blur(0px)' } : { opacity: 0.4, filter: 'blur(3px)' }}
             transition={{ duration: 1, delay: 0.3, ease }}
-            className="relative font-serif text-xl leading-[1.6] md:text-[1.7rem] md:leading-[1.55]"
+            className="relative font-serif text-[17px] leading-[1.55] md:text-[1.7rem]"
           >
             {step.think}
           </motion.p>
@@ -772,7 +774,7 @@ function Guide() {
       </div>
 
       <div className="mx-auto grid max-w-7xl gap-6 px-6 md:px-12 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
-        <div className="sticky top-0 z-20 -mx-6 h-[46vh] bg-wall px-8 pb-6 pt-16 md:mx-0 lg:h-screen lg:bg-transparent lg:px-0 lg:py-0">
+        <div className="sticky top-0 z-20 -mx-6 h-[40vh] bg-wall px-8 pb-5 pt-12 md:mx-0 lg:h-screen lg:bg-transparent lg:px-0 lg:py-0">
           <Stage active={active} />
           {/* 진행 표시 */}
           <div className="absolute bottom-3 right-8 flex items-center gap-3 lg:bottom-16 lg:left-0 lg:right-auto">
