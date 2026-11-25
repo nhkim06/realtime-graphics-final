@@ -158,17 +158,27 @@ function Hero() {
   // 스크롤하면 화면이 뒤로 눕듯 기울어지며 멀어짐
   // 모바일은 머무는 구간(섹션 높이)과 기울기를 줄여 바로 넘어가는 느낌으로
   const [isMobile] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia('(max-width: 767px)').matches,
   );
   const rotX = useTransform(scrollYProgress, [0, 1], [0, isMobile ? 14 : 38]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, isMobile ? 0.9 : 0.72]);
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [1, isMobile ? 0.9 : 0.72],
+  );
   const radius = useTransform(scrollYProgress, [0, 0.4], [0, 4]);
   const textY = useTransform(scrollYProgress, [0, 1], [0, -120]);
   const fade = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   const title = '흐름의 폭정'.split('');
 
   return (
-    <section id="top" ref={ref} className="relative h-[108svh] bg-ink md:h-[130svh]">
+    <section
+      id="top"
+      ref={ref}
+      className="relative h-[108svh] bg-ink md:h-[130svh]"
+    >
       <div className="sticky top-0 h-[100svh] overflow-hidden [perspective:1400px]">
         <motion.div
           style={{
@@ -334,17 +344,27 @@ function LayerStack() {
     target: ref,
     offset: ['start end', 'end start'],
   });
-  const gap = useTransform(scrollYProgress, [0.15, 0.6], [14, 78]);
+  // 모바일은 층이 벌어지는 폭을 줄여 위쪽 본문을 침범하지 않게
+  const [isMobile] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia('(max-width: 767px)').matches,
+  );
+  const gap = useTransform(
+    scrollYProgress,
+    [0.15, 0.6],
+    [14, isMobile ? 34 : 78],
+  );
   const rotZ = useTransform(scrollYProgress, [0, 1], [-38, -26]);
 
   return (
     <div
       ref={ref}
-      className="relative mx-auto flex h-[360px] w-full max-w-[520px] items-center justify-center [perspective:1600px] md:h-[560px]"
+      className="relative mx-auto flex h-[340px] w-full max-w-[520px] items-center justify-center pt-8 [perspective:1600px] md:h-[560px] md:pt-0"
     >
       <motion.div
         style={{ rotateX: 58, rotateZ: rotZ, transformStyle: 'preserve-3d' }}
-        className="relative h-[220px] w-[300px] md:h-[260px] md:w-[360px]"
+        className="relative h-[200px] w-[270px] md:h-[260px] md:w-[360px]"
       >
         {/* 가장 아래: 사실 */}
         <div className="absolute inset-0 flex flex-col justify-between bg-paper p-6 shadow-[0_40px_60px_-20px_rgba(0,0,0,0.35)] ring-1 ring-ink/10">
@@ -381,7 +401,10 @@ function Layer({ l, i, gap }) {
 
 function About() {
   return (
-    <section id="about" className="relative bg-wall pb-8 pt-28 text-ink md:py-44">
+    <section
+      id="about"
+      className="relative bg-wall pb-8 pt-28 text-ink md:py-44"
+    >
       <div className="mx-auto grid max-w-7xl items-center gap-16 px-6 md:px-12 lg:grid-cols-2">
         <div>
           <Eyebrow className="text-red">About the work</Eyebrow>
@@ -629,7 +652,10 @@ function Stage({ active }) {
               className="absolute -bottom-5 -left-3 z-30 flex items-center gap-2.5 bg-paper py-2 pl-2 pr-4 text-ink shadow-[0_30px_50px_-20px_rgba(0,0,0,0.4)] lg:-bottom-8 lg:-left-10 lg:gap-4 lg:py-3 lg:pl-3 lg:pr-6"
             >
               <span className="flex h-9 w-9 items-center justify-center bg-red text-paper lg:h-12 lg:w-12">
-                <GestureIcon kind={step.key} className="h-6 w-6 lg:h-8 lg:w-8" />
+                <GestureIcon
+                  kind={step.key}
+                  className="h-6 w-6 lg:h-8 lg:w-8"
+                />
               </span>
               <span>
                 <span className="block font-mono text-[9px] tracking-widest text-red lg:text-[10px]">
@@ -677,8 +703,12 @@ function Stage({ active }) {
 function StepBlock({ step, onActive }) {
   const ref = useRef(null);
   // 모바일은 상단에 스크린이 고정되어 있으므로 활성 기준선을 화면 아래쪽(55%)으로 내림
-  const isLg = typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches;
-  const inView = useInView(ref, { margin: isLg ? '-45% 0px -45% 0px' : '-55% 0px -44% 0px' });
+  const isLg =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(min-width: 1024px)').matches;
+  const inView = useInView(ref, {
+    margin: isLg ? '-45% 0px -45% 0px' : '-55% 0px -44% 0px',
+  });
   useEffect(() => {
     if (inView) onActive(step.key);
   }, [inView, onActive, step.key]);
@@ -708,7 +738,9 @@ function StepBlock({ step, onActive }) {
         <h3 className="mt-1.5 font-serif text-[1.45rem] font-normal md:mt-6 md:text-5xl">
           {step.verb}
         </h3>
-        <p className="mt-1.5 text-[14px] leading-relaxed text-ink/85 md:mt-5 md:text-lg">{step.how}</p>
+        <p className="mt-1.5 text-[14px] leading-relaxed text-ink/85 md:mt-5 md:text-lg">
+          {step.how}
+        </p>
 
         {/* 보게 될 것 — 보조 정보 */}
         <div className="mt-4 border-t border-ink/15 pt-3 md:mt-10 md:pt-6">
@@ -722,7 +754,11 @@ function StepBlock({ step, onActive }) {
 
         {/* 생각해 볼 것 — 강조 블록 */}
         <motion.div
-          animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0.6, y: 12, scale: 0.98 }}
+          animate={
+            inView
+              ? { opacity: 1, y: 0, scale: 1 }
+              : { opacity: 0.6, y: 12, scale: 0.98 }
+          }
           transition={{ duration: 0.9, ease }}
           className="relative mt-3 overflow-hidden bg-paper px-4 py-3 text-ink shadow-[0_24px_50px_-30px_rgba(0,0,0,0.25)] ring-1 ring-ink/[0.06] md:mt-8 md:px-9 md:pb-10 md:pt-8"
         >
@@ -740,7 +776,11 @@ function StepBlock({ step, onActive }) {
             ”
           </span>
           <motion.p
-            animate={inView ? { opacity: 1, filter: 'blur(0px)' } : { opacity: 0.4, filter: 'blur(3px)' }}
+            animate={
+              inView
+                ? { opacity: 1, filter: 'blur(0px)' }
+                : { opacity: 0.4, filter: 'blur(3px)' }
+            }
             transition={{ duration: 1, delay: 0.3, ease }}
             className="relative font-serif text-[15px] leading-[1.55] md:text-[1.7rem]"
           >
@@ -810,7 +850,8 @@ function useFastSnap() {
         if (!best || d < best.d) best = { to, d };
       });
       // 가까울 때만 끌어당김 (다른 섹션은 자유 스크롤)
-      if (best && best.d > 2 && best.d < window.innerHeight * 0.3) animateTo(best.to);
+      if (best && best.d > 2 && best.d < window.innerHeight * 0.3)
+        animateTo(best.to);
     };
 
     const onScroll = () => {
@@ -869,11 +910,25 @@ function StepNavButton({ dir, disabled, onClick }) {
       aria-label={dir === 'prev' ? '이전 동작' : '다음 동작'}
       className="group flex h-11 w-11 items-center justify-center rounded-full border border-ink/20 bg-paper/70 text-ink backdrop-blur transition-all duration-300 hover:border-red hover:bg-red hover:text-paper disabled:pointer-events-none disabled:opacity-30"
     >
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        viewBox="0 0 24 24"
+        className="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         {dir === 'prev' ? (
-          <path d="M15 5l-7 7 7 7" className="transition-transform group-hover:-translate-x-0.5" />
+          <path
+            d="M15 5l-7 7 7 7"
+            className="transition-transform group-hover:-translate-x-0.5"
+          />
         ) : (
-          <path d="M9 5l7 7-7 7" className="transition-transform group-hover:translate-x-0.5" />
+          <path
+            d="M9 5l7 7-7 7"
+            className="transition-transform group-hover:translate-x-0.5"
+          />
         )}
       </svg>
     </button>
@@ -930,8 +985,16 @@ function Guide() {
 
           {/* 데스크톱: 이전 / 다음 단계 버튼 */}
           <div className="absolute bottom-14 right-0 hidden items-center gap-2 lg:flex">
-            <StepNavButton dir="prev" disabled={idx <= 0} onClick={() => goToStep(idx - 1)} />
-            <StepNavButton dir="next" disabled={idx >= STEPS.length - 1} onClick={() => goToStep(idx + 1)} />
+            <StepNavButton
+              dir="prev"
+              disabled={idx <= 0}
+              onClick={() => goToStep(idx - 1)}
+            />
+            <StepNavButton
+              dir="next"
+              disabled={idx >= STEPS.length - 1}
+              onClick={() => goToStep(idx + 1)}
+            />
           </div>
         </div>
 
@@ -1009,7 +1072,9 @@ function ReadTheScreen() {
                   </span>
                 </div>
               </Tilt>
-              <h3 className="mt-4 text-[15px] font-semibold md:mt-6 md:text-xl lg:text-lg">{el.name}</h3>
+              <h3 className="mt-4 text-[15px] font-semibold md:mt-6 md:text-xl lg:text-lg">
+                {el.name}
+              </h3>
               <p className="mt-1.5 text-[13px] leading-relaxed md:mt-2 md:text-[15px] text-paper/55">
                 {el.body}
               </p>
