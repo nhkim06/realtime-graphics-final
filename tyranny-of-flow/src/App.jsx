@@ -225,16 +225,8 @@ function Hero() {
           style={{ y: textY, opacity: fade }}
           className="relative z-10 flex h-full flex-col justify-between px-8 pb-12 pt-20 md:px-16 md:pb-14 md:pt-24"
         >
-          {/* 상단 메타 정보 */}
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.8, duration: 1, ease }}
-            className="flex items-center justify-between border-b border-paper/10 pb-3 font-mono text-[10px] tracking-[0.25em] text-paper/45"
-          >
-            <span>2026-2 REALTIME GRAPHICS</span>
-            <LiveTimecode />
-          </motion.div>
+          {/* 제목 위치 유지를 위한 빈 자리 */}
+          <div aria-hidden="true" className="pb-3 font-mono text-[10px]">&nbsp;</div>
 
           <div>
             <motion.p
@@ -265,13 +257,6 @@ function Hero() {
                   </motion.span>
                 </span>
               ))}
-              {/* 붉은 정육면체 마침표 */}
-              <motion.span
-                initial={{ scale: 0, rotate: -45 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ delay: 1.45, duration: 0.8, ease }}
-                className="mb-[0.16em] ml-[0.08em] inline-block h-[0.13em] w-[0.13em] bg-red-bright shadow-[0_0_40px_rgba(232,69,60,0.7)]"
-              />
             </h1>
 
             {/* 붉은 선 스윕 */}
