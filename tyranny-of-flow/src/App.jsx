@@ -353,14 +353,14 @@ function LayerStack() {
   const gap = useTransform(
     scrollYProgress,
     [0.15, 0.6],
-    [14, isMobile ? 34 : 78],
+    [14, isMobile ? 70 : 78],
   );
   const rotZ = useTransform(scrollYProgress, [0, 1], [-38, -26]);
 
   return (
     <div
       ref={ref}
-      className="relative mx-auto flex h-[340px] w-full max-w-[520px] items-center justify-center pt-8 [perspective:1600px] md:h-[560px] md:pt-0"
+      className="relative mx-auto flex h-[420px] w-full max-w-[520px] items-center justify-center pt-24 [perspective:1600px] md:h-[560px] md:pt-0"
     >
       <motion.div
         style={{ rotateX: 58, rotateZ: rotZ, transformStyle: 'preserve-3d' }}
