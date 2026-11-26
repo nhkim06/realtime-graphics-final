@@ -717,7 +717,7 @@ function StepBlock({ step, onActive }) {
     <div
       ref={ref}
       data-snap
-      className="flex min-h-[58vh] flex-col justify-start pb-9 pt-9 lg:min-h-screen lg:justify-center lg:py-14"
+      className="flex min-h-[55vh] flex-col justify-start pb-9 pt-3 md:min-h-[58vh] md:pt-9 lg:min-h-screen lg:justify-center lg:py-14"
     >
       <motion.div
         animate={{ opacity: inView ? 1 : 0.25 }}
@@ -808,10 +808,10 @@ function useFastSnap() {
     const targetFor = (el) => {
       const r = el.getBoundingClientRect();
       const isLg = window.matchMedia('(min-width: 1024px)').matches;
-      // 데스크톱: 화면 중앙 정렬 / 모바일: 고정 스크린(42vh) 바로 아래 정렬
+      // 데스크톱: 화면 중앙 정렬 / 폰·탭: 고정 스크린 바로 아래 정렬
       return isLg
         ? window.scrollY + r.top + r.height / 2 - window.innerHeight / 2
-        : window.scrollY + r.top - window.innerHeight * 0.42;
+        : window.scrollY + r.top - window.innerHeight * stickyRatio();
     };
 
     const cancel = () => {
@@ -876,6 +876,11 @@ function useFastSnap() {
   }, []);
 }
 
+/** 폰·탭에서 상단 고정 스크린이 차지하는 화면 높이 비율 (폰 45vh / 탭 42vh) */
+function stickyRatio() {
+  return window.matchMedia('(min-width: 768px)').matches ? 0.42 : 0.45;
+}
+
 /** 지정한 위치까지 부드럽게(easeInOutCubic) 스크롤 */
 function scrollToY(to, duration = 650) {
   const from = window.scrollY;
@@ -892,13 +897,18 @@ function scrollToY(to, duration = 650) {
   requestAnimationFrame(step);
 }
 
-/** i번째 단계 블록이 화면 중앙에 오도록 이동 (데스크톱 전용) */
+/** i번째 단계 블록으로 이동 — 데스크톱은 화면 중앙, 폰·탭은 고정 스크린 바로 아래 */
 function goToStep(i) {
   const blocks = document.querySelectorAll('[data-snap]');
   const el = blocks[Math.max(0, Math.min(i, blocks.length - 1))];
   if (!el) return;
   const r = el.getBoundingClientRect();
-  scrollToY(window.scrollY + r.top + r.height / 2 - window.innerHeight / 2);
+  const isLg = window.matchMedia('(min-width: 1024px)').matches;
+  scrollToY(
+    isLg
+      ? window.scrollY + r.top + r.height / 2 - window.innerHeight / 2
+      : window.scrollY + r.top - window.innerHeight * stickyRatio(),
+  );
 }
 
 function StepNavButton({ dir, disabled, onClick }) {
@@ -908,7 +918,7 @@ function StepNavButton({ dir, disabled, onClick }) {
       onClick={onClick}
       disabled={disabled}
       aria-label={dir === 'prev' ? '이전 동작' : '다음 동작'}
-      className="group flex h-11 w-11 items-center justify-center rounded-full border border-ink/20 bg-paper/70 text-ink backdrop-blur transition-all duration-300 hover:border-red hover:bg-red hover:text-paper disabled:pointer-events-none disabled:opacity-30"
+      className="group flex h-8 w-8 items-center justify-center rounded-full lg:h-11 lg:w-11 border border-ink/20 bg-paper/70 text-ink backdrop-blur transition-all duration-300 hover:border-red hover:bg-red hover:text-paper disabled:pointer-events-none disabled:opacity-30"
     >
       <svg
         viewBox="0 0 24 24"
@@ -963,38 +973,40 @@ function Guide() {
       </div>
 
       <div className="mx-auto grid max-w-7xl gap-6 px-6 md:px-12 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
-        <div className="sticky top-0 z-20 -mx-6 h-[42vh] bg-wall px-8 pb-5 pt-[3.75rem] md:mx-0 lg:h-screen lg:bg-transparent lg:px-0 lg:py-0">
+        <div className="sticky top-0 z-20 -mx-6 h-[45vh] bg-wall px-8 pb-[3.25rem] pt-[3.75rem] md:mx-0 md:h-[42vh] md:pb-5 lg:h-screen lg:bg-transparent lg:px-0 lg:py-0">
           <Stage active={active} />
-          {/* 진행 표시 */}
-          <div className="absolute bottom-3 right-8 flex items-center gap-3 lg:bottom-16 lg:left-0 lg:right-auto">
-            {STEPS.map((s, i) => (
-              <span key={s.key} className="flex items-center gap-1.5">
-                <span
-                  className={`h-1.5 w-1.5 rounded-full transition-colors duration-500 ${
-                    i <= idx ? 'bg-red' : 'bg-ink/20'
-                  }`}
-                />
-                <span
-                  className={`hidden font-mono text-[10px] transition-colors sm:inline ${i === idx ? 'text-ink' : 'text-ink/30'}`}
-                >
-                  {s.no}
+          {/* 진행 표시 + 이전/다음 버튼
+              폰: 점 아래에 버튼 / 탭: 점 위에 버튼 / 데스크톱: 각각 따로 배치(lg:contents) */}
+          <div className="absolute -bottom-1 right-8 flex flex-col items-end gap-1.5 md:bottom-2 md:flex-col-reverse md:gap-2.5 lg:contents">
+            <div className="flex items-center gap-2 sm:gap-3 lg:absolute lg:bottom-16 lg:left-0">
+              {STEPS.map((s, i) => (
+                <span key={s.key} className="flex items-center gap-1.5">
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full transition-colors duration-500 ${
+                      i <= idx ? 'bg-red' : 'bg-ink/20'
+                    }`}
+                  />
+                  <span
+                    className={`hidden font-mono text-[10px] transition-colors sm:inline ${i === idx ? 'text-ink' : 'text-ink/30'}`}
+                  >
+                    {s.no}
+                  </span>
                 </span>
-              </span>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          {/* 데스크톱: 이전 / 다음 단계 버튼 */}
-          <div className="absolute bottom-14 right-0 hidden items-center gap-2 lg:flex">
-            <StepNavButton
-              dir="prev"
-              disabled={idx <= 0}
-              onClick={() => goToStep(idx - 1)}
-            />
-            <StepNavButton
-              dir="next"
-              disabled={idx >= STEPS.length - 1}
-              onClick={() => goToStep(idx + 1)}
-            />
+            <div className="flex items-center gap-2 lg:absolute lg:bottom-14 lg:right-0">
+              <StepNavButton
+                dir="prev"
+                disabled={idx <= 0}
+                onClick={() => goToStep(idx - 1)}
+              />
+              <StepNavButton
+                dir="next"
+                disabled={idx >= STEPS.length - 1}
+                onClick={() => goToStep(idx + 1)}
+              />
+            </div>
           </div>
         </div>
 
